@@ -104,6 +104,7 @@ export default function IdeaTable({ ideas, onEdit, onDelete, search, setSearch }
             <div className="idea-badges">
               <Badge tone={feasibilityTone[it.feasibility]}>{it.feasibility}</Badge>
               <Badge tone={marketTone[it.marketPotential]}>{it.marketPotential}</Badge>
+              {it.authorName ? <Badge tone="gray">by {it.authorName}</Badge> : null}
             </div>
 
             <div className="idea-description">

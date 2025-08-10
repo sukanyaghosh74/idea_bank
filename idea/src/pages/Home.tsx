@@ -1,14 +1,19 @@
-import { useMemo, useState, type ReactElement } from 'react'
+import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import IdeaTable from '../components/IdeaTable'
 import Modal from '../components/Modal'
 import IdeaForm, { type IdeaDraft } from '../components/IdeaForm'
-import { exportIdeasToJson, generateId, loadIdeas, saveIdeas, type Idea } from '../utils/storage'
+import AuthForm from '../components/AuthForm'
+import { exportIdeasToJson, generateId, loadIdeas, saveIdeas, type Idea, getCurrentUser, setCurrentUser, logout, findOrCreateUser, type User } from '../utils/storage'
+import { apiCreateIdea, apiDeleteIdea, apiGetMe, apiListIdeas, apiLogin, apiLogout, apiUpdateIdea, apiExportUrl } from '../utils/api'
 
 export default function Home(): ReactElement {
-  const [ideas, setIdeas] = useState<Idea[]>(() => loadIdeas())
+  const [ideas, setIdeas] = useState<Idea[]>([])
+  const [user, setUser] = useState<User | null>(null)
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Idea | null>(null)
+  const [openAuth, setOpenAuth] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   const title = useMemo(() => (editing ? 'Edit Idea' : 'Add New Idea'), [editing])
 
@@ -17,29 +22,38 @@ export default function Home(): ReactElement {
     setOpen(true)
   }
 
-  function handleSubmit(draft: IdeaDraft) {
-    if (editing) {
-      const updated: Idea = {
-        ...editing,
-        ...draft,
-        updatedAt: Date.now(),
+  async function bootstrap() {
+    try {
+      const me = await apiGetMe()
+      setUser(me)
+    } catch {}
+    try {
+      const list = await apiListIdeas()
+      setIdeas(list)
+    } catch {}
+  }
+
+  useEffect(() => {
+    void bootstrap()
+  }, [])
+
+  async function handleSubmit(draft: IdeaDraft) {
+    try {
+      setSaving(true)
+      if (editing) {
+        const updated = await apiUpdateIdea(editing.id, draft)
+        setIdeas((prev) => prev.map((it) => (it.id === updated.id ? updated : it)))
+      } else {
+        const created = await apiCreateIdea(draft)
+        setIdeas((prev) => [created, ...prev])
       }
-      const next = ideas.map((it) => (it.id === editing.id ? updated : it))
-      setIdeas(next)
-      saveIdeas(next)
-    } else {
-      const now = Date.now()
-      const created: Idea = {
-        id: generateId(),
-        createdAt: now,
-        updatedAt: now,
-        ...draft,
-      }
-      const next = [created, ...ideas]
-      setIdeas(next)
-      saveIdeas(next)
+      setOpen(false)
+    } catch (err) {
+      console.error('Failed to save idea', err)
+      alert('Failed to save idea. Please ensure the API server is running (npm run server).')
+    } finally {
+      setSaving(false)
     }
-    setOpen(false)
   }
 
   function handleEdit(idea: Idea) {
@@ -47,10 +61,9 @@ export default function Home(): ReactElement {
     setOpen(true)
   }
 
-  function handleDelete(id: string) {
-    const next = ideas.filter((it) => it.id !== id)
-    setIdeas(next)
-    saveIdeas(next)
+  async function handleDelete(id: string) {
+    await apiDeleteIdea(id)
+    setIdeas((prev) => prev.filter((i) => i.id !== id))
   }
 
   const [dark, setDark] = useState<boolean>(() => {
@@ -67,8 +80,16 @@ export default function Home(): ReactElement {
         <div className="container navbar-inner">
           <div className="navbar-title">💡 Idea Bank</div>
           <div className="navbar-actions">
+            {user ? (
+              <>
+                <span style={{ opacity: 0.85 }}>Hi, {user.name}</span>
+                <button onClick={() => { logout(); setUser(null) }} className="btn">Logout</button>
+              </>
+            ) : (
+              <button onClick={() => setOpenAuth(true)} className="btn">Login</button>
+            )}
             {ideas.length > 0 && (
-              <button onClick={() => exportIdeasToJson(ideas)} className="btn">Export JSON</button>
+              <a href={apiExportUrl()} className="btn">Export JSON</a>
             )}
             <button onClick={() => setDark((d) => !d)} className="btn" aria-label="Toggle dark mode" title="Toggle dark mode">
               {dark ? '🌙' : '☀️'}
@@ -84,6 +105,17 @@ export default function Home(): ReactElement {
 
       <Modal open={open} onClose={() => setOpen(false)} title={title}>
         <IdeaForm initial={editing ?? undefined} onSubmit={handleSubmit} onCancel={() => setOpen(false)} />
+      </Modal>
+
+      <Modal open={openAuth} onClose={() => setOpenAuth(false)} title="Sign in to save ideas">
+        <AuthForm
+          onSubmit={(name, email) => {
+            apiLogin(name, email).then((u) => {
+              setUser(u)
+              setOpenAuth(false)
+            })
+          }}
+        />
       </Modal>
     </div>
   )

@@ -12,9 +12,13 @@ export interface Idea {
   nextSteps: string
   createdAt: number
   updatedAt: number
+  userId?: string
+  authorName?: string
 }
 
 const STORAGE_KEY = 'idea-bank-items'
+const USERS_KEY = 'idea-bank-users'
+const SESSION_KEY = 'idea-bank-session'
 
 export function loadIdeas(): Idea[] {
   try {
@@ -54,6 +58,63 @@ export function exportIdeasToJson(ideas: Idea[]): void {
   a.click()
   a.remove()
   URL.revokeObjectURL(url)
+}
+
+// Simple auth (local-only)
+export interface User {
+  id: string
+  name: string
+  email: string
+  createdAt: number
+}
+
+export function loadUsers(): User[] {
+  try {
+    const raw = localStorage.getItem(USERS_KEY)
+    if (!raw) return []
+    const data = JSON.parse(raw) as User[]
+    return Array.isArray(data) ? data : []
+  } catch (err) {
+    console.error('Failed to load users', err)
+    return []
+  }
+}
+
+export function saveUsers(users: User[]): void {
+  try {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users))
+  } catch (err) {
+    console.error('Failed to save users', err)
+  }
+}
+
+export function getCurrentUser(): User | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY)
+    if (!raw) return null
+    const id = JSON.parse(raw) as string
+    return loadUsers().find((u) => u.id === id) ?? null
+  } catch {
+    return null
+  }
+}
+
+export function setCurrentUser(userId: string): void {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(userId))
+}
+
+export function logout(): void {
+  localStorage.removeItem(SESSION_KEY)
+}
+
+export function findOrCreateUser(name: string, email: string): User {
+  const users = loadUsers()
+  const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase())
+  if (existing) return existing
+  const user: User = { id: generateId(), name, email, createdAt: Date.now() }
+  const next = [...users, user]
+  saveUsers(next)
+  return user
 }
 
 
