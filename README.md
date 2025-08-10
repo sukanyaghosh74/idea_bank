@@ -2,7 +2,7 @@
 
 Welcome to **Idea Bank**, your personal, beautifully designed space for capturing, organizing, and tracking every spark of creativity.
 
-![Idea Bank Screenshot](./screenshot.png)
+![Idea Bank Screenshot](./assets/screenshot.png)
 
 ---
 
@@ -42,7 +42,7 @@ Inspired by **Apple Vision Pro** and **Notion**, Idea Bank combines:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/idea-bank.git
+git clone https://github.com/sukanyaghosh74/idea-bank.git
 cd idea-bank
 
 # Install dependencies
@@ -78,8 +78,8 @@ src/
 
 ## 📜 License
 
-This project is licensed under the MIT License – feel free to use and adapt.
+This project is licensed under the MIT License, feel free to use and adapt.
 
 ---
 
-> **"Ideas are the seeds of innovation — keep them safe, nurture them, and watch them grow."** 🌱
+> **"Ideas are the seeds of innovation, keep them safe, nurture them, and watch them grow."** 🌱
