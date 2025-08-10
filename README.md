@@ -88,6 +88,13 @@ Visit `http://localhost:5173` to see your Idea Bank in action.
 └─ assets/                       # Images for README (optional)
 ```
 
+### Deploy to Vercel (frontend)
+1. Push your repo to GitHub.
+2. In Vercel, import the repo.
+3. Framework preset: “Other”. Build command: `npm run build`. Output dir: `dist`.
+4. Add environment variable `VITE_API_BASE` to your deployed project, pointing to your API base (e.g. `https://your-api.example.com`). If you don’t have an API yet, omit it and the app will still work locally with localStorage for existing code paths.
+5. Deploy.
+
 ---
 
 ## 💡 Future Plans

@@ -23,8 +23,11 @@ export interface User {
   createdAt: number
 }
 
+const API_BASE = (import.meta as any).env?.VITE_API_BASE || ''
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
+  const url = `${API_BASE}${path}`
+  const res = await fetch(url, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     ...options,

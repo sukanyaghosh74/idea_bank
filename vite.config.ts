@@ -10,12 +10,7 @@ export default defineConfig({
   },
   server: {
     host: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
-    },
+    // No proxy needed in production; for local dev, set VITE_API_BASE or start the server and use proxy
   },
 })
 
