@@ -59,11 +59,33 @@ Visit `http://localhost:5173` to see your Idea Bank in action.
 ## 📂 Project Structure
 
 ```
-src/
-  components/   # Reusable UI components
-  pages/        # Page layouts
-  utils/        # Helper functions (storage, formatting)
-  App.tsx       # Main app entry
+├─ idea/
+│  ├─ index.html
+│  └─ src/
+│     ├─ App.tsx                 # Landing + App switch (hash `#app` shows the app)
+│     ├─ index.css               # All styles (plain CSS)
+│     ├─ main.tsx                # React bootstrap
+│     ├─ pages/
+│     │  ├─ Home.tsx             # App UI (navbar, cards grid, modals)
+│     │  └─ Landing.tsx          # Landing page
+│     ├─ components/
+│     │  ├─ AuthForm.tsx
+│     │  ├─ Badge.tsx
+│     │  ├─ IdeaForm.tsx
+│     │  ├─ IdeaTable.tsx
+│     │  └─ Modal.tsx
+│     └─ utils/
+│        ├─ api.ts               # API client (fetch with credentials)
+│        └─ storage.ts           # Types + legacy local helpers
+│
+├─ server/
+│  ├─ index.js                   # Express API (login, ideas CRUD, export)
+│  └─ db.json                    # JSON database (auto-created/updated)
+│
+├─ vite.config.ts                # Vite root set to `idea/` + proxy to API
+├─ package.json                  # Scripts: dev, build, preview, server
+├─ package-lock.json
+└─ assets/                       # Images for README (optional)
 ```
 
 ---
