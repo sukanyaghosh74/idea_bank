@@ -52,6 +52,31 @@ body {
 .app-root { min-height: 100%; background: var(--bg); }
 .container { max-width: 1120px; margin: 0 auto; padding: 0 1rem; }
 
+/* Landing styles */
+.landing-nav { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: linear-gradient(to right, rgba(255,255,255,0.7), rgba(255,255,255,0.5)); border-bottom: 1px solid rgba(0,0,0,0.04); }
+.dark .landing-nav { background: linear-gradient(to right, rgba(17,17,17,0.7), rgba(17,17,17,0.5)); }
+.landing-nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem; }
+.landing-brand { font-weight: 800; letter-spacing: -0.02em; }
+.landing { background: radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,0.15), transparent), radial-gradient(1000px 500px at 90% -10%, rgba(167,139,250,0.18), transparent), var(--bg); }
+
+.hero { position: relative; overflow: hidden; padding: 6rem 0 4rem; }
+.hero .aurora { position: absolute; inset: -20%; background: radial-gradient(800px 400px at 30% 10%, rgba(59,130,246,0.25), transparent), radial-gradient(700px 350px at 70% 10%, rgba(167,139,250,0.28), transparent); filter: blur(40px); opacity: .7; }
+.hero-inner { position: relative; text-align: center; }
+.hero-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+.hero-sub { max-width: 720px; margin: 0.75rem auto 1.25rem; opacity: .85; }
+.hero-ctas { display: inline-flex; gap: 0.75rem; }
+
+.features { padding: 3rem 0 4rem; }
+.features-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+.feature-card { border: 1px solid var(--border); background: var(--card-bg); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 16px rgba(0,0,0,.06); transition: transform 220ms ease, box-shadow 220ms ease; }
+.feature-card:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,.12); }
+.feature-icon { font-size: 1.25rem; margin-bottom: 0.5rem; }
+.feature-title { font-weight: 700; margin-bottom: 0.25rem; }
+.feature-desc { opacity: .85; }
+
+.landing-footer { padding: 2rem 0; border-top: 1px solid rgba(0,0,0,0.06); opacity: .75; }
+
 /* Navbar */
 .navbar { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: linear-gradient(to right, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); border-bottom: 1px solid rgba(255,255,255,0.2); }
 .dark .navbar { background: rgba(17,17,17,0.6); }

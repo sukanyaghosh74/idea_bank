@@ -1,12 +1,16 @@
 import Home from './pages/Home'
-import type { ReactElement } from 'react'
+import Landing from './pages/Landing'
+import { useEffect, useState, type ReactElement } from 'react'
 
 function App(): ReactElement {
-  return (
-    <div className="min-h-full bg-neutral-50">
-      <Home />
-    </div>
-  )
+  const [showApp, setShowApp] = useState(false)
+  useEffect(() => {
+    if (location.hash === '#app') setShowApp(true)
+    const onHash = () => setShowApp(location.hash === '#app')
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  return showApp ? <Home /> : <Landing />
 }
 
 export default App
